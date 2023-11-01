@@ -43,7 +43,7 @@ def publish_cards(event):
             "count": count,
         }
         print(f'{datetime.now()}: Sending Chunk {count}')
-        future = publisher.publish("projects/mtg-rest/topics/simple_topic", json.dumps(body).encode("utf8"))
+        future = publisher.publish("projects/mtg-rest/topics/cards", json.dumps(body).encode("utf8"))
         print(f'{datetime.now()}: Sent Chunk {count}')
         count += 1
         futures.append(future)
