@@ -12,8 +12,29 @@ import time
 
 from fetcher import fetch_cards
 from transformer import transform
+import flask
 
-app = initialize_app()
+
+# TODO
+# Split into Routes, Services & Utils
+
+initialize_app()
+app = flask.Flask(__name__)
+
+
+@app.get("/hello")
+def getGreeting():
+    return flask.Response(status=200, response="Hello From Flask")
+
+@https_fn.on_request()
+def world(req):
+    return https_fn.Response(response="Hello from Google")
+
+@https_fn.on_request()
+def sampleroute(req: https_fn.Request) -> https_fn.Response:
+    with app.request_context(req.environ):
+        return app.full_dispatch_request()
+
 options.set_global_options(max_instances=1, memory=options.MemoryOption.GB_4, cpu=2, timeout_sec=540)
 
 def chunk_documents(documents, chunk_size = 500):      
