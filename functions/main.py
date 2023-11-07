@@ -18,6 +18,7 @@ import flask
 # TODO
 # Split into Routes, Services & Utils
 
+
 initialize_app()
 app = flask.Flask(__name__)
 
