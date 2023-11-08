@@ -17,7 +17,7 @@ import flask
 
 # TODO
 # Split into Routes, Services & Utils
-
+options.set_global_options(max_instances=1, memory=options.MemoryOption.GB_4, cpu=2, timeout_sec=540)
 
 initialize_app()
 app = flask.Flask(__name__)
@@ -25,7 +25,11 @@ app = flask.Flask(__name__)
 
 @app.get("/hello")
 def getGreeting():
+    args = flask.request.args
+    print(args)
+    print(args.get("land", None))
     return flask.Response(status=200, response="Hello From Flask")
+
 
 @https_fn.on_request()
 def world(req):
@@ -35,8 +39,6 @@ def world(req):
 def sampleroute(req: https_fn.Request) -> https_fn.Response:
     with app.request_context(req.environ):
         return app.full_dispatch_request()
-
-options.set_global_options(max_instances=1, memory=options.MemoryOption.GB_4, cpu=2, timeout_sec=540)
 
 def chunk_documents(documents, chunk_size = 500):      
     for i in range(0, len(documents), chunk_size):  
@@ -96,6 +98,11 @@ def on_cards_published(event: pubsub_fn.CloudEvent[pubsub_fn.MessagePublishedDat
     batch = db.batch()
     for doc in data["chunk"]:
         card = cards.document(doc["id"])
+        
+        # Convert json string back to timestamp
+        doc["released"] = datetime.fromisoformat(doc["released"])
+        print("RELEASED", doc["released"])
+
         batch.set(card, doc, merge=True)
     batch.commit()
 

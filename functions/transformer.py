@@ -1,5 +1,6 @@
 from datetime import datetime
 import pandas as pd
+from firebase_admin import firestore
 
 def transform(data):
     # FILTER CARD DATA
@@ -9,7 +10,7 @@ def transform(data):
     print(datetime.now(), ": Filtering Card Data")
 
     # Simple Conversions
-    df["released"] = pd.to_datetime(df["released_at"], errors='coerce')
+    df["released"] = pd.to_datetime(df["released_at"], errors='coerce').astype(str)
     df["cmc"] = pd.to_numeric(df["cmc"], errors='coerce').fillna(0)
     df["power"] = pd.to_numeric(df["power"], errors='coerce').fillna(0)
     df["toughness"] = pd.to_numeric(df["toughness"], errors='coerce').fillna(0)
@@ -63,13 +64,9 @@ def transform(data):
             }
         }
 
-        r_year, r_month, r_day = str(card["released"].date()).split("-")
-        card["released"] = {
-            "year": r_year, "month": r_month, "day": r_day,
-        }
         del card["eur"]
         del card["usd"]
         del card["usd_foil"]
         del card["eur_foil"]
-        del card["released"]
+       # del card["released"]
     return cards
